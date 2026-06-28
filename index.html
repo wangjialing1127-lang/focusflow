@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusFlow POS - 个人终极操作系统 v4.1</title>
+    <title>FocusFlow POS - 个人终极操作系统 v4.2</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -72,7 +72,7 @@
         .tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: white; }
         .tag.main { background: var(--primary); }
         .tag.sub { background: var(--text-muted); }
-        .tag.ielts { background: #805ad5; } /* 雅思专属紫色标签 */
+        .tag.ielts { background: #805ad5; }
 
         /* Roadmap 进度表样式 */
         .roadmap-row { display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 16px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.04); }
@@ -92,7 +92,6 @@
 </head>
 <body>
 
-    <!-- 左侧主控导航系统 -->
     <div class="sidebar">
         <div>
             <div class="brand">
@@ -107,13 +106,11 @@
                 <div class="menu-item" onclick="switchPage('knowledge', this)">📚 学科知识图 (雷达)</div>
             </div>
         </div>
-        <div style="font-size: 0.75rem; color: #4a5568; text-align: center;">FocusFlow v4.1 Time-Engine Inside</div>
+        <div style="font-size: 0.75rem; color: #4a5568; text-align: center;">FocusFlow v4.2 Time-Engine Inside</div>
     </div>
 
-    <!-- 右侧动态内容视窗 -->
     <div class="main-viewport">
         
-        <!-- 全局通用的顶部日期与高精度实时倒计时 -->
         <div class="glass-card header-bar">
             <div>
                 <h2 id="live-date" style="margin-bottom: 0; font-size: 1.4rem;">正在加载中系统时间...</h2>
@@ -125,11 +122,9 @@
             </div>
         </div>
 
-        <!-- ================= PAGE 1: DASHBOARD ================= -->
         <div id="page-dashboard" class="app-page active">
             <div class="grid-2col">
                 <div>
-                    <!-- 能量决策 -->
                     <div class="glass-card">
                         <h2>⚡ 今日智能状态平衡调节器 (Load Balance)</h2>
                         <div class="load-balancer">
@@ -140,16 +135,13 @@
                         <div id="mode-desc" style="margin-top:12px; font-size:0.9rem; color:var(--text-muted);">加载中...</div>
                     </div>
 
-                    <!-- 今日冲刺任务 (这里的内容由 JavaScript 引擎根据日期自动渲染) -->
                     <div class="glass-card">
                         <h2 id="sprint-title">🚀 智能追踪中...</h2>
                         <p id="sprint-win-condition" style="font-size:0.85rem; color:var(--primary); margin-bottom:12px; font-weight: bold;"></p>
                         <div class="task-container" id="dynamic-task-box">
-                            <!-- 自动化任务节点插槽 -->
-                        </div>
+                            </div>
                     </div>
 
-                    <!-- 周末复盘 -->
                     <div class="glass-card">
                         <h2>📝 Weekly Review 核心复盘舱</h2>
                         <textarea id="review-area" oninput="saveData()" placeholder="根据【理解→建立框架→大量做题→分析错因→间隔复习→全真模拟】闭环核对：&#10;1. 本周哪一部分完成了思维导图或框架建立？&#10;2. 错题分析是否做到双倍时间复盘？&#10;3. 下周唯一最高重点（Win Condition）："></textarea>
@@ -157,338 +149,9 @@
                 </div>
 
                 <div>
-                    <!-- OKR 看板 -->
                     <div class="glass-card">
                         <h2>🎯 年度人生最高 OKR</h2>
                         <div style="font-size:0.85rem; line-height:1.8;">
                             <b>O1: 深大自考四门一次性斩仓</b><br><span style="color:var(--text-muted)">KR: 遵循科学闭环，每科稳压 60+ 及格</span><br><br>
                             <b>O2: 公务员考试笔试顺利进面</b><br><span style="color:var(--text-muted)">KR: 严格执行计划，行测正确率稳定 70%</span><br><br>
-                            <b>O3: 职业求职作品集重构</b><br><span style="color:var(--text-muted)">KR: 将本 FocusFlow 项目全链沉淀上岸</span>
-                        </div>
-                    </div>
-                    <!-- 警示栏 -->
-                    <div class="glass-card" style="border-left: 4px solid var(--red);">
-                        <h2>🚫 10月前坚决不碰黑名单</h2>
-                        <p style="font-size:0.85rem; color:var(--red); line-height:1.8;">❌ 频繁折腾复杂的新软件工具<br>❌ 每天花大块时间死磕雅思写作大题<br>❌ 盲目硬背近代史大题（后期突击）</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= PAGE 2: ROADMAP (年度全景规划) ================= -->
-        <div id="page-roadmap" class="app-page">
-            <div class="glass-card">
-                <h2>🗺️ 2026 战略时间轴与月度迭代闭环规划</h2>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px;">核心全局引擎会依据以下大周期节点对首页执行动态分流：</p>
-                
-                <div class="roadmap-row">
-                    <div class="month-label">Sprint 1</div>
-                    <div class="progress-track"><div class="progress-bar" style="width: 100%;"></div><div class="progress-text">6.14 - 7.14【基础理解与框架建立期】自考马原破局 / 国考一轮概念推进</div></div>
-                </div>
-                <div class="roadmap-row">
-                    <div class="month-label">Sprint 2</div>
-                    <div class="progress-track"><div class="progress-bar" style="width: 85%;"></div><div class="progress-text">7.15 - 8.05【深化框架与做题切入期】自考框架收尾 / 雅思单项做题与分析错因</div></div>
-                </div>
-                <div class="roadmap-row">
-                    <div class="month-label">Sprint 3</div>
-                    <div class="progress-track"><div class="progress-bar" style="width: 70%;"></div><div class="progress-text">8.06 - 9.15【大量狂飙与分析复习期】自考5年真题海刷 / 国考粉笔四板块日刷</div></div>
-                </div>
-                <div class="roadmap-row">
-                    <div class="month-label">Sprint 4</div>
-                    <div class="progress-track"><div class="progress-bar" style="width: 50%; background:var(--yellow);"></div><div class="progress-text">9.16 - 11.01【全真模拟与终极战役期】10.24自考斩仓 / 国考真题2小时闭卷模拟</div></div>
-                </div>
-                <div class="roadmap-row">
-                    <div class="month-label">Sprint 5</div>
-                    <div class="progress-track"><div class="progress-bar" style="width: 25%; background:var(--red);"></div><div class="progress-text">11.02 - 11.28【国考战前决战大熔断】申论大作文极速突击 / 11.28奔赴国考</div></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= PAGE 3: KNOWLEDGE (学科知识路线) ================= -->
-        <div id="page-knowledge" class="app-page">
-            <div class="glass-card">
-                <h2>📚 学科里程碑雷达控制台（自考 4 门深度追踪）</h2>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">点击勾选你的通关进度，摆脱虚无感，进度本地永久锁死：</p>
-                
-                <div class="subject-grid">
-                    <!-- 马原 -->
-                    <div class="glass-card" style="background:rgba(255,255,255,0.5);">
-                        <h3>🔮 马克思主义基本原理</h3>
-                        <div class="sub-badge-group">
-                            <label class="sub-badge"><span>1.【理解】听精讲网课，理解核心概念</span><input type="checkbox" id="k-my-1" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>2.【框架】梳理章节思维导图建立骨架</span><input type="checkbox" id="k-my-2" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>3.【做题】历年5年真题选择题大量海刷</span><input type="checkbox" id="k-my-3" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>4.【复习】分析错因，薄弱章节间隔复习</span><input type="checkbox" id="k-my-4" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>5.【模拟】考前两周闭卷限时全真模拟</span><input type="checkbox" id="k-my-5" onclick="saveData()"></label>
-                        </div>
-                    </div>
-                    <!-- 英语 -->
-                    <div class="glass-card" style="background:rgba(255,255,255,0.5);">
-                        <h3>🇬🇧 专升本/自考英语二</h3>
-                        <div class="sub-badge-group">
-                            <label class="sub-badge"><span>1.【理解】攻克核心长难句语法逻辑</span><input type="checkbox" id="k-en-1" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>2.【框架】拆解阅读理解核心题干结构</span><input type="checkbox" id="k-en-2" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>3.【做题】真题核心阅读/高频短语海刷</span><input type="checkbox" id="k-en-3" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>4.【复习】复盘翻译及阅读错因对抗遗忘</span><input type="checkbox" id="k-en-4" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>5.【模拟】考前手写背诵专属作文模板</span><input type="checkbox" id="k-en-5" onclick="saveData()"></label>
-                        </div>
-                    </div>
-                    <!-- 新思想 -->
-                    <div class="glass-card" style="background:rgba(255,255,255,0.5);">
-                        <h3>🇨🇳 毛泽东思想和中国特色社会主义</h3>
-                        <div class="sub-badge-group">
-                            <label class="sub-badge"><span>1.【理解】快速浏览网课培养时政直觉</span><input type="checkbox" id="k-xsx-1" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>2.【框架】串联重大历史思想核心逻辑</span><input type="checkbox" id="k-xsx-2" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>3.【做题】历年选择题库覆盖式大量盲刷</span><input type="checkbox" id="k-xsx-3" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>4.【复习】分析错因，突击主观大题背诵</span><input type="checkbox" id="k-xsx-4" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>5.【模拟】考前真题限时作答，控制字迹</span><input type="checkbox" id="k-xsx-5" onclick="saveData()"></label>
-                        </div>
-                    </div>
-                    <!-- 近代史 -->
-                    <div class="glass-card" style="background:rgba(255,255,255,0.5);">
-                        <h3>📜 中国近代史纲要</h3>
-                        <div class="sub-badge-group">
-                            <label class="sub-badge"><span>1.【理解】按时间线理清大事件历史因果</span><input type="checkbox" id="k-jds-1" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>2.【框架】建立会议、政策宏观框架导图</span><input type="checkbox" id="k-jds-2" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>3.【做题】真题近4年选择题海量大练兵</span><input type="checkbox" id="k-jds-3" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>4.【复习】分析混淆错因，间隔循环巩固</span><input type="checkbox" id="k-jds-4" onclick="saveData()"></label>
-                            <label class="sub-badge"><span>5.【模拟】考前两周疯狂背诵主观题骨架</span><input type="checkbox" id="k-jds-5" onclick="saveData()"></label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- 系统全栈级驱动脚本舱 -->
-    <script>
-        // ================= 核心全量跨度任务数据库 (4.1 闭环版) =================
-        const SPRINT_DATABASE = [
-            {
-                id: "sprint1",
-                title: "🏃‍♂️ 当前迭代: Sprint 1 基础理解与框架建立期 (6.14 - 7.14)",
-                winCondition: "Win Condition: 马原破局，行测言语判断资料概念一轮学完",
-                startDate: "2026-06-14",
-                endDate: "2026-07-14",
-                tasks: [
-                    { id: "s1_1", tag: "main", label: "【自考·理解】看马原精讲网课理解核心概念，思路跟着老师走 (60分钟)" },
-                    { id: "s1_2", tag: "main", label: "【自考·框架】认真做马原例题，并逐步梳理出第一章思维导图" },
-                    { id: "s1_3", tag: "main", label: "【自考·理解】通读并理解英语二专升本高频语法与核心长难句" },
-                    { id: "s1_4", tag: "sub", label: "【国考·弟排】看基础课系统网课，思路跟着老师走，认真做例题" },
-                    { id: "s1_5", tag: "sub", label: "【国考·弟排】不追求速度，要细心和尝试考试讲解的方法，讲完后重做一遍例题" },
-                    { id: "s1_6", tag: "sub", label: "【国考·弟排】坚持两个星期学习一个章节的基础课节奏推进" },
-                    { id: "s1_7", tag: "ielts", label: "【雅思·理解】通过语境与例句深层理解核心词汇，拒绝死记硬背" },
-                    { id: "s1_8", tag: "ielts", label: "【雅思·框架】梳理听力和阅读的基本题型结构，建立解题粗骨架" }
-                ]
-            },
-            {
-                id: "sprint2",
-                title: "🏃‍♂️ 自动步入: Sprint 2 深化框架与做题切入期 (7.15 - 8.05)",
-                winCondition: "Win Condition: 自考大框架收尾，雅思高强度切入做题并双倍时间分析错因",
-                startDate: "2026-07-15",
-                endDate: "2026-08-05",
-                tasks: [
-                    { id: "s2_1", tag: "main", label: "【自考·框架】完成马原、近代史、新思想三科的宏观逻辑框架建立" },
-                    { id: "s2_2", tag: "main", label: "【自考·做题】开启历年真题选择题刷题，用大量做题检验基础盲区" },
-                    { id: "s2_3", tag: "main", label: "【自考·框架】英语二精读阅读理解，开始拆解题干框架" },
-                    { id: "s2_4", tag: "sub", label: "【国考·弟排】完成基础课收尾，确保行测基础知识骨架全覆盖" },
-                    { id: "s2_5", tag: "sub", label: "【国考·弟排】重做数量/资料经典例题，巩固知识，不刻意追求速度" },
-                    { id: "s2_6", tag: "ielts", label: "【雅思·做题】高强度进行听力和阅读的单项大量做题训练" },
-                    { id: "s2_7", tag: "ielts", label: "【雅思·复习】每做完一组，必须花双倍时间分析错因（词汇盲区/逻辑陷阱）" }
-                ]
-            },
-            {
-                id: "sprint3",
-                title: "🏃‍♂️ 自动步入: Sprint 3 大量狂飙与分析复习期 (8.06 - 9.15)",
-                winCondition: "Win Condition: 国考四板块雷打不动日刷，自考死磕近5年真题选择题并间隔复习",
-                startDate: "2026-08-06",
-                endDate: "2026-09-15",
-                tasks: [
-                    { id: "s3_1", tag: "main", label: "【自考·做题】四门核心全线海刷，大量做题死磕近5年真题选择题" },
-                    { id: "s3_2", tag: "main", label: "【自考·复习】分析错因，针对薄弱章节进行“间隔复习”（利用闪卡或遮挡重做）" },
-                    { id: "s3_3", tag: "sub", label: "【国考·弟排】粉笔app上每天做一组四个板块训练题，刚开始不求时间和正确率，但必须天天做" },
-                    { id: "s3_4", tag: "sub", label: "【国考·弟排】指标：资料20题/30分，数量10题(对+猜共5个)/15分，判断15题/15分，言语15题/15分" },
-                    { id: "s3_5", tag: "sub", label: "【国考·弟排】除数量外正确率卡在70%左右，感觉做题累、正确率不高是正常的，去b站搜花生十三和陈怀安" },
-                    { id: "s3_6", tag: "ielts", label: "【雅思·复习】对前两阶段积累的错题、核心长难句进行间隔复习，加深肌肉记忆" },
-                    { id: "s3_7", tag: "ielts", label: "【雅思·模拟】利用周末时间进行一次听力+阅读的限时全真模拟，稳定心态" }
-                ]
-            },
-            {
-                id: "sprint4",
-                title: "🏃‍♂️ 自动步入: Sprint 4 全真模拟与终极战役期 (9.16 - 11.01)",
-                winCondition: "Win Condition: 迎战10月自考，国考进入2小时闭卷模拟与申论客观题破局",
-                startDate: "2026-09-16",
-                endDate: "2026-11-01",
-                tasks: [
-                    { id: "s4_1", tag: "main", label: "【自考·模拟】10月前两周进行严格的限时全真模拟，闭卷硬啃全套真题" },
-                    { id: "s4_2", tag: "main", label: "🚨🚨【10.24 - 10.25 自考开战】卸下包袱，奔赴考场，四门全线斩仓！" },
-                    { id: "s4_3", tag: "sub", label: "【国考·弟排】粉笔app下载历年试卷打印，一定两小时内做完一整套，做完看讲解错题/慢题，难题不管" },
-                    { id: "s4_4", tag: "sub", label: "【国考·弟排】看b站小马哥讲申论，跟刷每天两道申论题（大作文先不看）" },
-                    { id: "s4_5", tag: "sub", label: "【国考·弟排】周末必须每天两套行测、一套申论（不带作文），去b站搜小黑政治的课，看课加练题" },
-                    { id: "s4_6", tag: "sub", label: "【国考·弟排】每周天参加粉笔模考，只参加行测模考，核对全国排位" },
-                    { id: "s4_7", tag: "ielts", label: "【雅思·模拟】完全按照真实考试时间流程进行全真模拟，高度保持临考心智" }
-                ]
-            },
-            {
-                id: "sprint5",
-                title: "🏃‍♂️ 自动步入: Sprint 5 国考战前决战大熔断 (11.02 - 11.28)",
-                winCondition: "Win Condition: 申论大作文极速背熟模板，行测严控速度，奔赴战场",
-                startDate: "2026-11-02",
-                endDate: "2026-11-28",
-                tasks: [
-                    { id: "s5_1", tag: "sub", label: "【国考·弟排】每天剧试卷和每个板块的题，学习申论大作文（主背一两篇模板开头结尾，中间内容靠平时积累）" },
-                    { id: "s5_2", tag: "sub", label: "【国考·弟排】作文不会就在考试时修改前面的材料；审清题目不偏题，字写好、开头结尾套模板，拿中等偏上分" },
-                    { id: "s5_3", tag: "sub", label: "【国考·弟排】核心抓做题速度和正确率，其余板块70%左右正确率以保证整体速度" },
-                    { id: "s5_4", tag: "sub", label: "【国考·弟排】优先完成资料判断言语；数量找三个简单的做；留25分钟给政治常识，不会立刻放弃不纠结" },
-                    { id: "s5_5", tag: "sub", label: "🎯🎯【11.28 - 11.29 国考决战】保持绝对稳定的心态，卸下包袱奔赴战场！" },
-                    { id: "s5_6", tag: "ielts", label: "【雅思·保温】雅思全面为主线国考让路，保持清晨最低限度碎片化听力/单词保活即可" }
-                ]
-            }
-        ];
-
-        // === 1. 核心页面多维切换引擎 ===
-        function switchPage(pageId, element) {
-            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            
-            document.getElementById('page-' + pageId).classList.add('active');
-            element.classList.add('active');
-        }
-
-        // === 2. 高精度时间轴抓取与自动化倒计时驱动 ===
-        let currentActiveSprintId = "sprint1";
-
-        function driveTimeAndCountdowns() {
-            const now = new Date();
-            const formatOptions = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-            document.getElementById('live-date').innerText = now.toLocaleDateString('zh-CN', formatOptions);
-
-            // 倒计时校准 (自考 2026-10-24, 国考 2026-11-28)
-            const zkDay = new Date('2026-10-24T00:00:00');
-            const diffZk = zkDay - now;
-            document.getElementById('cd-zk').innerText = diffZk > 0 ? Math.ceil(diffZk / (1000 * 60 * 60 * 24)) : 0;
-
-            const gkDay = new Date('2026-11-28T00:00:00');
-            const diffGk = gkDay - now;
-            document.getElementById('cd-gk').innerText = diffGk > 0 ? Math.ceil(diffGk / (1000 * 60 * 60 * 24)) : 0;
-
-            // 根据真实时间，自动锁定并动态切换 Sprint 数据库
-            let matchedSprint = SPRINT_DATABASE[0];
-            const todayStr = now.toISOString().split('T')[0];
-
-            for (let sprint of SPRINT_DATABASE) {
-                if (todayStr >= sprint.startDate && todayStr <= sprint.endDate) {
-                    matchedSprint = sprint;
-                    break;
-                }
-            }
-            
-            currentActiveSprintId = matchedSprint.id;
-            renderSprintTasks(matchedSprint);
-        }
-
-        // === 3. 动态任务列表节点渲染器 ===
-        function renderSprintTasks(sprint) {
-            document.getElementById('sprint-title').innerText = sprint.title;
-            document.getElementById('sprint-win-condition').innerText = sprint.winCondition;
-
-            const box = document.getElementById('dynamic-task-box');
-            box.innerHTML = ""; 
-
-            sprint.tasks.forEach(t => {
-                const item = document.createElement('div');
-                
-                // 确定分类 class 标签以匹配负荷调节器
-                let modeClass = 'm-task';
-                if (t.tag === 'sub' || t.tag === 'ielts') {
-                    modeClass = 's-task';
-                }
-                item.className = `task-item ${modeClass}`;
-                
-                const isChecked = localStorage.getItem(`pos_dynamic_${sprint.id}_${t.id}`) === "true";
-
-                let tagSpan = '<span class="tag main">主线</span>';
-                if (t.tag === 'sub') tagSpan = '<span class="tag sub">国考</span>';
-                if (t.tag === 'ielts') tagSpan = '<span class="tag ielts">雅思</span>';
-
-                item.innerHTML = `
-                    <input type="checkbox" id="${sprint.id}_${t.id}" ${isChecked ? 'checked' : ''} onclick="saveDynamicTask('${sprint.id}', '${t.id}')">
-                    ${tagSpan}
-                    <span>${t.label}</span>
-                `;
-                box.appendChild(item);
-            });
-        }
-
-        // === 4. 独立任务勾选状态动态存储 ===
-        function saveDynamicTask(sprintId, taskId) {
-            const el = document.getElementById(`${sprintId}_${taskId}`);
-            localStorage.setItem(`pos_dynamic_${sprintId}_${taskId}`, el.checked);
-        }
-
-        // === 5. 全数据通用本地自记忆存储 ===
-        function saveData() {
-            localStorage.setItem('pos_review_text_v4', document.getElementById('review-area').value);
-            
-            const subPrefixes = ['my', 'en', 'xsx', 'jds'];
-            subPrefixes.forEach(p => {
-                for(let j = 1; j <= 5; j++) {
-                    const el = document.getElementById(`k-${p}-${j}`);
-                    localStorage.setItem(`pos_k_${p}_${j}`, el.checked);
-                }
-            });
-        }
-
-        function restoreData() {
-            const savedReview = localStorage.getItem('pos_review_text_v4');
-            if(savedReview) document.getElementById('review-area').value = savedReview;
-
-            const subPrefixes = ['my', 'en', 'xsx', 'jds'];
-            subPrefixes.forEach(p => {
-                for(let j = 1; j <= 5; j++) {
-                    if(localStorage.getItem(`pos_k_${p}_${j}`) === "true") {
-                        document.getElementById(`k-${p}-${j}`).checked = true;
-                    }
-                }
-            });
-
-            const savedMode = localStorage.getItem('pos_current_mode') || 'green';
-            switchMode(savedMode);
-        }
-
-        // === 6. 动态负荷自适应调节模块 ===
-        function switchMode(mode) {
-            document.querySelectorAll('.load-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + mode).classList.add('active');
-            
-            const desc = document.getElementById('mode-desc');
-            const subTasks = document.querySelectorAll('.s-task');
-            const mainTasks = document.querySelectorAll('.m-task');
-
-            if (mode === 'green') {
-                desc.innerText = "当前模式：Green 能量满格。严格执行自考闭环理解、国考概念课推进以及雅思语境积累。";
-                subTasks.forEach(t => t.style.opacity = '1');
-                mainTasks.forEach(t => t.style.opacity = '1');
-            } else if (mode === 'yellow') {
-                desc.innerText = "当前模式：Yellow 触发局部阻断。国考与雅思保温降低透明度，全力确保今日自考主线突破。";
-                subTasks.forEach(t => t.style.opacity = '0.2');
-                mainTasks.forEach(t => t.style.opacity = '1');
-            } else if (mode === 'red') {
-                desc.innerText = "当前模式：Red 触发极度疲劳熔断。副线全部隐藏，主线自考任务降低至轻度浏览，保证底层保活！";
-                subTasks.forEach(t => t.style.opacity = '0.1');
-                mainTasks.forEach(t => t.style.opacity = '0.4');
-            }
-            localStorage.setItem('pos_current_mode', mode);
-        }
-
-        // 核心生命系统启动引导
-        window.onload = function() {
-            driveTimeAndCountdowns();
-            restoreData();
-            // 每隔一小时自动校准一次时间轴
-            setInterval(driveTimeAndCountdowns, 3600000);
-        };
-    </script>
-</body>
-</html>
+                            <b>O3: 职业求职作品集重构</b><br><span style="
