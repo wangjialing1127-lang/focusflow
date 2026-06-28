@@ -3,289 +3,386 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusFlow OS - 2026 敏捷备考生命系统</title>
+    <title>FocusFlow POS - 个人终极操作系统</title>
     <style>
         :root {
-            --bg-color: #f4f6f9;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --text-main: #2c3e50;
-            --text-muted: #7f8c8d;
-            --primary: #3498db;
-            --green: #2ecc71;
-            --yellow: #f1c40f;
-            --red: #e74c3c;
-            --border-radius: 16px;
+            --bg-color: #f0f2f5;
+            --sidebar-bg: #1e222b;
+            --sidebar-text: #a0aec0;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --primary: #3182ce;
+            --green: #38a169;
+            --yellow: #dd6b20;
+            --red: #e53e3e;
+            --border-radius: 12px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: var(--bg-color); color: var(--text-main); padding: 24px; line-height: 1.6; }
+        body { background: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* 左侧高级导航栏 */
+        .sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; padding: 24px 16px; justify-content: space-between; }
+        .brand { padding-left: 12px; margin-bottom: 32px; }
+        .brand h1 { font-size: 1.4rem; font-weight: 800; background: linear-gradient(45deg, #63b3ed, #4fd1c5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand p { font-size: 0.75rem; color: var(--sidebar-text); margin-top: 4px; }
         
-        /* Glassmorphism 磨砂玻璃质感 */
+        .menu-group { margin-bottom: 24px; }
+        .menu-label { font-size: 0.75rem; color: #4a5568; text-transform: uppercase; letter-spacing: 1px; padding-left: 12px; margin-bottom: 8px; }
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px; color: var(--sidebar-text); text-decoration: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; transition: all 0.2s; }
+        .menu-item:hover, .menu-item.active { background: #2d3748; color: white; font-weight: bold; }
+
+        /* 右侧主内容视窗 */
+        .main-viewport { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 24px; }
+        .app-page { display: none; }
+        .app-page.active { display: block; }
+
+        /* Glassmorphism 卡片布局 */
         .glass-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: var(--border-radius);
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
 
-        h2 { font-size: 1.2rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-        
-        /* Header & 倒计时 */
-        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-        .logo-area h1 { font-size: 1.8rem; font-weight: 700; background: linear-gradient(45deg, #1a2a6c, #b21f1f, #fdbb2d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .countdown-container { display: flex; gap: 16px; }
-        .countdown-box { text-align: center; background: rgba(0,0,0,0.03); padding: 8px 16px; border-radius: 8px; min-width: 110px;}
-        .countdown-box .days { font-size: 1.4rem; font-weight: bold; color: var(--text-main); }
-        .countdown-box .label { font-size: 0.75rem; color: var(--text-muted); }
+        /* 顶部看板组件 */
+        .header-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .countdown-container { display: flex; gap: 12px; }
+        .countdown-box { text-align: center; background: rgba(0,0,0,0.03); padding: 6px 12px; border-radius: 8px; min-width: 100px; border-top: 4px solid #ccc; }
 
-        /* 状态平衡器组件 */
+        /* 任务与调节器样式 */
         .load-balancer { display: flex; gap: 12px; margin-top: 12px; }
-        .load-btn { flex: 1; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; opacity: 0.4; text-align: center;}
-        .load-btn.green { background-color: var(--green); color: white; }
-        .load-btn.yellow { background-color: var(--yellow); color: #333; }
-        .load-btn.red { background-color: var(--red); color: white; }
-        .load-btn.active { opacity: 1; transform: scale(1.03); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .mode-tip { margin-top: 12px; font-size: 0.9rem; color: var(--text-muted); min-height: 24px; }
+        .load-btn { flex: 1; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; opacity: 0.4; text-align: center; transition: 0.2s; }
+        .load-btn.green { background: var(--green); color: white; }
+        .load-btn.yellow { background: var(--yellow); color: white; }
+        .load-btn.red { background: var(--red); color: white; }
+        .load-btn.active { opacity: 1; transform: scale(1.02); }
+        
+        .grid-2col { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        @media (max-width: 1000px) { .grid-2col { grid-template-columns: 1fr; } }
 
-        /* 任务看板布局 */
-        .grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-        @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
-
-        /* Task List 样式 */
-        .task-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .task-item:last-child { border-bottom: none; }
+        .task-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
         .task-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
         .task-item input[type="checkbox"]:checked + span { text-decoration: line-through; color: var(--text-muted); }
         .tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: white; }
         .tag.main { background: var(--primary); }
         .tag.sub { background: var(--text-muted); }
 
-        /* OKR & NOT TO DO */
-        .okr-list, .not-to-do-list { list-style: none; }
-        .okr-list li { margin-bottom: 8px; font-size: 0.9rem; }
-        .not-to-do-list li { color: var(--red); font-size: 0.9rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        /* Roadmap 进度表样式 */
+        .roadmap-row { display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 16px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.04); }
+        .month-label { font-weight: bold; font-size: 0.95rem; }
+        .progress-track { background: #e2e8f0; height: 24px; border-radius: 6px; overflow: hidden; position: relative; display: flex; align-items: center; padding-left: 12px; }
+        .progress-bar { height: 100%; position: absolute; left: 0; top: 0; background: linear-gradient(90deg, #4299e1, #3182ce); z-index: 1; transition: width 0.5s; }
+        .progress-text { position: relative; z-index: 2; font-size: 0.8rem; color: white; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
 
-        /* Review 文本框 */
-        textarea { width: 100%; height: 120px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); padding: 12px; font-size: 0.9rem; resize: none; margin-top: 8px; }
+        /* 学科路线图样式 */
+        .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .subject-grid { grid-template-columns: 1fr; } }
+        .sub-badge-group { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+        .sub-badge { display: flex; justify-content: space-between; background: rgba(0,0,0,0.03); padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; }
+
+        textarea { width: 100%; height: 100px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); padding: 12px; font-size: 0.9rem; resize: none; margin-top: 8px; }
     </style>
 </head>
 <body>
 
-    <!-- 顶部状态栏 -->
-    <div class="glass-card header">
-        <div class="logo-area">
-            <h1>FocusFlow OS</h1>
-            <p id="live-date" style="font-size: 0.85rem; color: var(--text-muted);">正在加载系统时间...</p>
-        </div>
-        <div class="countdown-container">
-            <div class="countdown-box" style="border-top: 4px solid var(--primary);">
-                <div id="countdown-zk" class="days">--</div>
-                <div class="label">距离10月自考</div>
+    <!-- 左侧主控导航系统 -->
+    <div class="sidebar">
+        <div>
+            <div class="brand">
+                <h1>FocusFlow POS</h1>
+                <p>Plan your year. Execute your day.</p>
             </div>
-            <div class="countdown-box" style="border-top: 4px solid var(--yellow);">
-                <div id="countdown-gk" class="days">--</div>
-                <div class="label">距离2027国考</div>
-            </div>
-            <div class="countdown-box" style="border-top: 4px solid var(--text-muted);">
-                <div class="days">待定</div>
-                <div class="label">距离雅思出分</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 主体双栏布局 -->
-    <div class="grid-layout">
-        
-        <!-- 左侧栏：动态任务区 -->
-        <div class="left-column">
-            <!-- 能量动态调节平衡器 -->
-            <div class="glass-card">
-                <h2>⚡ 智能状态平衡调节器 (Load Balance)</h2>
-                <div class="load-balancer">
-                    <div id="btn-green" class="load-btn green active" onclick="switchMode('green')">🟢 正常下班</div>
-                    <div id="btn-yellow" class="load-btn yellow" onclick="switchMode('yellow')">🟡 临时加班</div>
-                    <div id="btn-red" class="load-btn red" onclick="switchMode('red')">🔴 极度疲劳</div>
-                </div>
-                <div id="mode-desc" class="mode-tip">当前模式：Green 能量满格。需完成今日主线自考任务与公考保温任务。</div>
-            </div>
-
-            <!-- Sprint 1 任务流 -->
-            <div class="glass-card">
-                <h2>🏃‍♂️ 当前迭代: Sprint 1 (7/1 - 7/14) </h2>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">本期 Win Condition：吃透马原第一章框架，对齐英语语法基础。</p>
-                
-                <div class="task-container">
-                    <div class="task-item main-task">
-                        <input type="checkbox" id="task-1" onclick="saveProgress()"> <span class="tag main">主线</span>
-                        <span>【马原】观看第一章精讲网课，对照思维导图圈出高频概念 (60分钟)</span>
-                    </div>
-                    <div class="task-item main-task">
-                        <input type="checkbox" id="task-2" onclick="saveProgress()"> <span class="tag main">主线</span>
-                        <span>【马原】刷第一章对应的章节选择题，错题打叉标记 (30分钟)</span>
-                    </div>
-                    <div class="task-item main-task">
-                        <input type="checkbox" id="task-3" onclick="saveProgress()"> <span class="tag main">主线</span>
-                        <span>【英语】熟读自考英语教材 Unit 1 课文，梳理核心长难句语法 (60分钟)</span>
-                    </div>
-                    <div class="task-item sub-task">
-                        <input type="checkbox" id="task-4" onclick="saveProgress()"> <span class="tag sub">公考</span>
-                        <span>【午休行测】利用午休时间在粉笔 APP 盲刷 15 道言语/判断题 (30分钟)</span>
-                    </div>
-                    <div class="task-item sub-task">
-                        <input type="checkbox" id="task-5" onclick="saveProgress()"> <span class="tag sub">公考</span>
-                        <span>【错题复盘】整理本周错题，在Notion写下一句话错误原因 (30分钟)</span>
-                    </div>
-                    <div class="task-item sub-task">
-                        <input type="checkbox" id="task-6" onclick="saveProgress()"> <span class="tag sub">雅思</span>
-                        <span>【碎片保活】通勤路程利用背词软件高频过 30 个雅思通用核心词 (30分钟)</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 周末复盘记录舱 -->
-            <div class="glass-card">
-                <h2>📝 Weekly Review 核心复盘舱 (每周日20分钟)</h2>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">输入本周最真实的迭代数据，数据自动本地实时保存：</p>
-                <textarea id="review-text" oninput="saveProgress()" placeholder="本周主线完成率：&#10;本周最大产品Bug（如：晚上被窝里刷短视频）：&#10;下周唯一最高重点（Win Condition）："></textarea>
-            </div>
-        </div>
-
-        <!-- 右侧栏：宏观战略控制台 -->
-        <div class="right-column">
-            <!-- OKR 年度目标栏 -->
-            <div class="glass-card">
-                <h2>🎯 年度人生 OKR 看板</h2>
-                <ul class="okr-list">
-                    <li><b>O1: 深大行政管理自考全通</b>
-                        <br><span style="color:var(--text-muted)">KR: 四门公共课全员卡线 60+ 通关</span>
-                    </li>
-                    <li style="margin-top: 12px;"><b>O2: 公务员考试笔试顺利进面</b>
-                        <br><span style="color:var(--text-muted)">KR: 累计刷满 5000 题 / 20套全真模考</span>
-                    </li>
-                    <li style="margin-top: 12px;"><b>O3: 雅思长线语言破局</b>
-                        <br><span style="color:var(--text-muted)">KR: 阶段三转为主线后冲刺总分 6.5+</span>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- 放弃列表 -->
-            <div class="glass-card" style="border-left: 4px solid var(--red);">
-                <h2>🚫 Not To Do List (10月前黑名单)</h2>
-                <ul class="not-to-do-list">
-                    <li>❌ 频繁折腾和更新复杂的软件工具</li>
-                    <li>❌ 每天花大块时间死磕雅思大作文</li>
-                    <li>❌ 承接耗费极多心智的低端视觉私单</li>
-                    <li>❌ 一上来就盲目死记硬背近代史大题</li>
-                </ul>
-            </div>
-
-            <!-- 风险控制仓 -->
-            <div class="glass-card">
-                <h2>🛡️ Risk Log 风险防御预案</h2>
-                <div style="font-size: 0.85rem; margin-bottom: 8px;">
-                    <b>⚠️ 8月公司高频加班：</b><br>
-                    <span style="color:var(--text-muted)">解法：无脑触发🟡/🔴模式，晚上只留低保量，利用 7.29 Buffer 周全力补齐。</span>
-                </div>
-                <div style="font-size: 0.85rem;">
-                    <b>⚠️ 突发身体不适或极度懒惰：</b><br>
-                    <span style="color:var(--text-muted)">解法：启动红灯安全区，每天背10个单词即可，进度绝不断线。</span>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- 核心逻辑脚本舱 -->
-    <script>
-        // === 1. 自动化时间与高精度倒计时引擎 ===
-        function initTargetCountdowns() {
-            const now = new Date();
             
-            // 格式化当前日期展示
-            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-            document.getElementById('live-date').innerText = `当前日期: ${now.toLocaleDateString('zh-CN', options)} | 独立创始人专属生命看板`;
+            <div class="menu-group">
+                <div class="menu-label">核心控制中心</div>
+                <div class="menu-item active" onclick="switchPage('dashboard', this)">🏠 Dashboard (本日)</div>
+                <div class="menu-item" onclick="switchPage('roadmap', this)">🗺️ 年度 Roadmap (远景)</div>
+                <div class="menu-item" onclick="switchPage('knowledge', this)">📚 学科知识图 (雷达)</div>
+            </div>
+        </div>
+        <div style="font-size: 0.75rem; color: #4a5568; text-align: center;">FocusFlow v3.0 Powered by Git</div>
+    </div>
 
-            // 自考目标设定：2026年10月17日 (初试首日)
-            const zkTarget = new Date('2026-10-17T00:00:00');
-            const diffZk = zkTarget - now;
-            const daysZk = Math.ceil(diffZk / (1000 * 60 * 60 * 24));
-            document.getElementById('countdown-zk').innerText = daysZk > 0 ? daysZk : 0;
+    <!-- 右侧动态内容视窗 -->
+    <div class="main-viewport">
+        
+        <!-- 全局通用的顶部日期与高精度实时倒计时 -->
+        <div class="glass-card header-bar">
+            <div>
+                <h2 id="live-date" style="margin-bottom: 0; font-size: 1.4rem;">正在加载中系统时间...</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">数据本地实时加密保存，严禁多重点主义</p>
+            </div>
+            <div class="countdown-container">
+                <div class="countdown-box" style="border-top-color: var(--primary);"><div id="cd-zk" class="days">--</div><div class="label">自考初试(天)</div></div>
+                <div class="countdown-box" style="border-top-color: var(--yellow);"><div id="cd-gk" class="days">--</div><div class="label">预计国考(天)</div></div>
+            </div>
+        </div>
 
-            // 公考国考目标估算：2026年11月29日 (历年国考笔试一般在11月底)
-            const gkTarget = new Date('2026-11-29T00:00:00');
-            const diffGk = gkTarget - now;
-            const daysGk = Math.ceil(diffGk / (1000 * 60 * 60 * 24));
-            document.getElementById('countdown-gk').innerText = daysGk > 0 ? daysGk : 0;
+        <!-- ================= PAGE 1: DASHBOARD ================= -->
+        <div id="page-dashboard" class="app-page active">
+            <div class="grid-2col">
+                <div>
+                    <!-- 能量决策 -->
+                    <div class="glass-card">
+                        <h2>⚡ 今日智能状态平衡调节器 (Load Balance)</h2>
+                        <div class="load-balancer">
+                            <div id="btn-green" class="load-btn green active" onclick="switchMode('green')">🟢 正常下班</div>
+                            <div id="btn-yellow" class="load-btn yellow" onclick="switchMode('yellow')">🟡 临时加班</div>
+                            <div id="btn-red" class="load-btn red" onclick="switchMode('red')">🔴 极度疲劳</div>
+                        </div>
+                        <div id="mode-desc" style="margin-top:12px; font-size:0.9rem; color:var(--text-muted);">加载中...</div>
+                    </div>
+
+                    <!-- 今日冲刺任务 -->
+                    <div class="glass-card">
+                        <h2>🏃‍♂️ 当前迭代: Sprint 1 核心任务序列</h2>
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Win Condition: 马原第一章破局，英语专升本向下兼容切入</p>
+                        <div class="task-container">
+                            <div class="task-item m-task"><input type="checkbox" id="t-1" onclick="saveData()"><span class="tag main">主线</span><span>【马原】看第一章精讲网课并圈出高频概念 (60分钟)</span></div>
+                            <div class="task-item m-task"><input type="checkbox" id="t-2" onclick="saveData()"><span class="tag main">主线</span><span>【马原】刷第一章选择题，错题打叉圈出 (30分钟)</span></div>
+                            <div class="task-item m-task"><input type="checkbox" id="t-3" onclick="saveData()"><span class="tag main">主线</span><span>【英语】通读 Unit 1 长难句，掌握专升本高频语法 (60分钟)</span></div>
+                            <div class="task-item s-task"><input type="checkbox" id="t-4" onclick="saveData()"><span class="tag sub">公考</span><span>【午休行测】在粉笔 APP 上高频盲刷 15 道言语判断题 (30钟)</span></div>
+                            <div class="task-item s-task"><input type="checkbox" id="t-5" onclick="saveData()"><span class="tag sub">公考</span><span>【周四复盘】在错题本写下一句话错误根本成因 (30分钟)</span></div>
+                            <div class="task-item s-task"><input type="checkbox" id="t-6" onclick="saveData()"><span class="tag sub">雅思</span><span>【碎片保活】通勤高频盲过 30 个雅思核心词汇 (20分钟)</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 周末复盘 -->
+                    <div class="glass-card">
+                        <h2>📝 Weekly Review 核心复盘舱</h2>
+                        <textarea id="review-area" oninput="saveData()" placeholder="本周主线实际完成率：&#10;发现的产品Bug（失控点）：&#10;下周唯一最高重点（Win Condition）："></textarea>
+                    </div>
+                </div>
+
+                <div>
+                    <!-- OKR 看板 -->
+                    <div class="glass-card">
+                        <h2>🎯 年度人生最高 OKR</h2>
+                        <div style="font-size:0.85rem; line-height:1.8;">
+                            <b>O1: 深大自考四门一次性斩仓</b><br><span style="color:var(--text-muted)">KR: 每科稳稳压线 60+ 及格</span><br><br>
+                            <b>O2: 公务员考试笔试顺利进面</b><br><span style="color:var(--text-muted)">KR: 行测/申论基础刷题满 5000 题</span><br><br>
+                            <b>O3: 职业求职作品集重构</b><br><span style="color:var(--text-muted)">KR: 将本 FocusFlow 项目全链沉淀上岸</span>
+                        </div>
+                    </div>
+                    <!-- 警示栏 -->
+                    <div class="glass-card" style="border-left: 4px solid var(--red);">
+                        <h2>🚫 10月前坚决不碰黑名单</h2>
+                        <p style="font-size:0.85rem; color:var(--red); line-height:1.8;">❌ 频繁折腾复杂的新软件工具<br>❌ 每天花大块时间死磕雅思写作大题<br>❌ 盲目硬背近代史大题（后期突击）</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 2: ROADMAP (年度全景规划) ================= -->
+        <div id="page-roadmap" class="app-page">
+            <div class="glass-card">
+                <h2>🗺️ 2026 - 2027 全景战略时间轴与月度 KPI 规划</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px;">每个月的核心战术目标一目了然，锚定长期大周期：</p>
+                
+                <div class="roadmap-row">
+                    <div class="month-label">2026.07月</div>
+                    <div class="progress-track"><div class="progress-bar" style="width: 100%;"></div><div class="progress-text">马原完成40% / 自考英语打底 / 行测言语基础全面开启</div></div>
+                </div>
+                <div class="roadmap-row">
+                    <div class="month-label">2026.08月</div>
+                    <div class="progress-track"><div class="progress-bar" style="width: 85%;"></div><div class="progress-text">马原结束全部一轮网课 / 近代史+新思想全面狂刷选择题</div></div>
+                </div>
+                <div class="roadmap-row">
+                    <div class="month-label">2026.09月</div>
+                    <div class="progress-track"><div class="progress-bar" style="width: 70%;"></div><div class="progress-text">开启自考4门主观题疯狂背诵 / 近 5 年选择题错题二刷</div></div>
+                </div>
+                <div class="roadmap-row">
+                    <div class="month-label">2026.10月</div>
+                    <div class="progress-track"><div class="progress-bar" style="width: 40%; background:var(--red);"></div><div class="progress-text">🚨10.17自考爆发斩仓 / 下半月主副线瞬间调换，全面切入公考</div></div>
+                </div>
+                <div class="roadmap-row">
+                    <div class="month-label">2026.11月</div>
+                    <div class="progress-track"><div class="progress-bar" style="width: 90%; background:var(--yellow);"></div><div class="progress-text">公考行测大题攻坚（资料、判断推理） / 申论核心小题拆解</div></div>
+                </div>
+                <div class="roadmap-row">
+                    <div class="month-label">2026.12月</div>
+                    <div class="progress-track"><div class="progress-bar" style="width: 80%; background:var(--yellow);"></div><div class="progress-text">行测全真限时模考 / 申论大作文模板沉淀 / 雅思清晨通勤泛听</div></div>
+                </div>
+                <div class="roadmap-row">
+                    <div class="month-label">2027.01-02</div>
+                    <div class="progress-track"><div class="progress-bar" style="width: 95%; background:var(--yellow);"></div><div class="progress-text">公考考前极速冲刺 / 狂参粉笔万人模考 / 奔赴国省考笔试沙场</div></div>
+                </div>
+                <div class="roadmap-row">
+                    <div class="month-label">2027.03-04</div>
+                    <div class="progress-track"><div class="progress-bar" style="width: 60%; background:var(--green);"></div><div class="progress-text">公考笔试出分，若进面激活面试副线 / 雅思正式升为主线全面轰炸</div></div>
+                </div>
+                <div class="roadmap-row">
+                    <div class="month-label">2027.05-07</div>
+                    <div class="progress-track"><div class="progress-bar" style="width: 100%; background:var(--green);"></div><div class="progress-text">🌍 剑桥雅思真题听说读写全机考模拟 / 7月斩获雅思 6.5+ 终极大出分</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 3: KNOWLEDGE (学科知识路线) ================= -->
+        <div id="page-knowledge" class="app-page">
+            <div class="glass-card">
+                <h2>📚 学科里程碑雷达控制台（自考 4 门深度追踪）</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">点击勾选你的通关进度，摆脱虚无感，进度本地永久锁死：</p>
+                
+                <div class="subject-grid">
+                    <!-- 马原 -->
+                    <div class="glass-card" style="background:rgba(255,255,255,0.5);">
+                        <h3>🔮 马克思主义基本原理</h3>
+                        <div class="sub-badge-group">
+                            <label class="sub-badge"><span>1. 精讲一轮系统网课</span><input type="checkbox" id="k-my-1" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>2. 核心大纲思维导图圈阅</span><input type="checkbox" id="k-my-2" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>3. 章节配套选择题一刷</span><input type="checkbox" id="k-my-3" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>4. 历年近5年真题选择题刷透</span><input type="checkbox" id="k-my-4" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>5. 考前主观简答论述背诵骨架</span><input type="checkbox" id="k-my-5" onclick="saveData()"></label>
+                        </div>
+                    </div>
+                    <!-- 英语 -->
+                    <div class="glass-card" style="background:rgba(255,255,255,0.5);">
+                        <h3>🇬🇧 专升本/自考英语二</h3>
+                        <div class="sub-badge-group">
+                            <label class="sub-badge"><span>1. 熟悉课本基础长难句核心语法</span><input type="checkbox" id="k-en-1" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>2. 完形填空与高频短语突击</span><input type="checkbox" id="k-en-2" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>3. 历年真题核心阅读狂刷</span><input type="checkbox" id="k-en-3" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>4. 汉译英与英译汉题型技巧总结</span><input type="checkbox" id="k-en-4" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>5. 考前手写背诵终极写作专属模板</span><input type="checkbox" id="k-en-5" onclick="saveData()"></label>
+                        </div>
+                    </div>
+                    <!-- 新思想 -->
+                    <div class="glass-card" style="background:rgba(255,255,255,0.5);">
+                        <h3>🇨🇳 毛泽东思想和中国特色社会主义</h3>
+                        <div class="sub-badge-group">
+                            <label class="sub-badge"><span>1. 快速浏览网课培养政治直觉语感</span><input type="checkbox" id="k-xsx-1" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>2. 历年选择题海量盲刷打卡</span><input type="checkbox" id="k-xsx-2" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>3. 核心时政关键新概念整理</span><input type="checkbox" id="k-xsx-3" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>4. 错题集二刷确保选择题稳拿大头</span><input type="checkbox" id="k-xsx-4" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>5. 考前两周突击死磕主观背诵大题</span><input type="checkbox" id="k-xsx-5" onclick="saveData()"></label>
+                        </div>
+                    </div>
+                    <!-- 近代史 -->
+                    <div class="glass-card" style="background:rgba(255,255,255,0.5);">
+                        <h3>📜 中国近代史纲要</h3>
+                        <div class="sub-badge-group">
+                            <label class="sub-badge"><span>1. 时间线大事件逻辑框架建立</span><input type="checkbox" id="k-jds-1" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>2. 核心章节核心选择题错题敏感度</span><input type="checkbox" id="k-jds-2" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>3. 真题近4年选择题覆盖式演练</span><input type="checkbox" id="k-jds-3" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>4. 关键历史会议与政策归纳整理</span><input type="checkbox" id="k-jds-4" onclick="saveData()"></label>
+                            <label class="sub-badge"><span>5. 考前狂轰乱炸疯狂背诵主观简答</span><input type="checkbox" id="k-jds-5" onclick="saveData()"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 系统全栈级驱动脚本舱 -->
+    <script>
+        // === 1. 核心页面多维切换引擎 ===
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            
+            document.getElementById('page-' + pageId).classList.add('active');
+            element.classList.add('active');
         }
 
-        // === 2. 状态平衡调节器控制流 ===
+        // === 2. 高精度时间流与自动化倒计时驱动 ===
+        function driveTimeAndCountdowns() {
+            const now = new Date();
+            const formatOptions = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('live-date').innerText = now.toLocaleDateString('zh-CN', formatOptions);
+
+            // 自考目标：2026年10月17日
+            const zkDay = new Date('2026-10-17T00:00:00');
+            const diffZk = zkDay - now;
+            document.getElementById('cd-zk').innerText = diffZk > 0 ? Math.ceil(diffZk / (1000 * 60 * 60 * 24)) : 0;
+
+            // 国考目标：2026年11月29日
+            const gkDay = new Date('2026-11-29T00:00:00');
+            const diffGk = gkDay - now;
+            document.getElementById('cd-gk').innerText = diffGk > 0 ? Math.ceil(diffGk / (1000 * 60 * 60 * 24)) : 0;
+        }
+
+        // === 3. 动态负荷自适应调节模块 ===
         function switchMode(mode) {
-            document.querySelectorAll('.load-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.load-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-' + mode).classList.add('active');
             
             const desc = document.getElementById('mode-desc');
-            const subTasks = document.querySelectorAll('.sub-task');
-            const mainTasks = document.querySelectorAll('.main-task');
+            const subTasks = document.querySelectorAll('.s-task');
+            const mainTasks = document.querySelectorAll('.m-task');
 
             if (mode === 'green') {
                 desc.innerText = "当前模式：Green 能量满格。需完成今日主线自考任务与公考、雅思保温任务。";
                 subTasks.forEach(t => t.style.opacity = '1');
                 mainTasks.forEach(t => t.style.opacity = '1');
             } else if (mode === 'yellow') {
-                desc.innerText = "当前模式：Yellow 触发自动防御机制！公考与雅思自动归档灰色，今晚只做自考主线，做完即通关！";
+                desc.innerText = "当前模式：Yellow 触发自动防御！公考与雅思自动归档灰色，今晚专攻自考主线，完成即算全通！";
                 subTasks.forEach(t => t.style.opacity = '0.2');
                 mainTasks.forEach(t => t.style.opacity = '1');
             } else if (mode === 'red') {
-                desc.innerText = "当前模式：Red 触发低保熔断机制！今晚只强撑看 10 分钟网课或背 10 个单词即可，直接碎大觉，依然算通关！";
+                desc.innerText = "当前模式：Red 触发极度疲劳低保熔断！今晚只需看10分钟网课或背10个单词，立刻睡觉，保活机制依然亮绿灯！";
                 subTasks.forEach(t => t.style.opacity = '0.2');
                 mainTasks.forEach(t => t.style.opacity = '0.4');
             }
-            // 保存当前选中的模式状态
-            localStorage.setItem('focusflow_current_mode', mode);
+            localStorage.setItem('pos_current_mode', mode);
         }
 
-        // === 3. LocalStorage 本地数据记忆引擎 ===
-        function saveProgress() {
-            // 保存所有复选框状态
-            const totalTasks = 6;
-            for(let i = 1; i <= totalTasks; i++) {
-                const checkbox = document.getElementById(`task-${i}`);
-                localStorage.setItem(`focusflow_task_${i}`, checkbox.checked);
+        // === 4. 全数据本地自记忆存储（LocalStorage） ===
+        function saveData() {
+            // 1. 保存今日打卡 6 个 checkbox
+            for(let i = 1; i <= 6; i++) {
+                localStorage.setItem('pos_t_' + i, document.getElementById('t-' + i).checked);
             }
-            // 保存复盘输入框文本
-            const reviewText = document.getElementById('review-text').value;
-            localStorage.setItem('focusflow_review_text', reviewText);
+            // 2. 保存复盘舱文本内容
+            localStorage.setItem('pos_review_text', document.getElementById('review-area').value);
+            
+            // 3. 保存学科路线图 20 个进度框
+            const subPrefixes = ['my', 'en', 'xsx', 'jds'];
+            subPrefixes.forEach(p => {
+                for(let j = 1; j <= 5; j++) {
+                    const el = document.getElementById(`k-${p}-${j}`);
+                    localStorage.setItem(`pos_k_${p}_${j}`, el.checked);
+                }
+            });
         }
 
-        function loadSavedProgress() {
-            // 恢复复选框
-            const totalTasks = 6;
-            for(let i = 1; i <= totalTasks; i++) {
-                const savedStatus = localStorage.getItem(`focusflow_task_${i}`);
-                if (savedStatus === "true") {
-                    document.getElementById(`task-${i}`).checked = true;
+        function restoreData() {
+            // 1. 恢复今日打卡 checkbox
+            for(let i = 1; i <= 6; i++) {
+                if(localStorage.getItem('pos_t_' + i) === "true") {
+                    document.getElementById('t-' + i).checked = true;
                 }
             }
-            // 恢复复盘文本
-            const savedText = localStorage.getItem('focusflow_review_text');
-            if (savedText) {
-                document.getElementById('review-text').value = savedText;
-            }
-            // 恢复能量模式
-            const savedMode = localStorage.getItem('focusflow_current_mode');
-            if (savedMode) {
-                switchMode(savedMode);
-            }
+            // 2. 恢复复盘舱内容
+            const savedReview = localStorage.getItem('pos_review_text');
+            if(savedReview) document.getElementById('review-area').value = savedReview;
+
+            // 3. 恢复学科路线图勾选
+            const subPrefixes = ['my', 'en', 'xsx', 'jds'];
+            subPrefixes.forEach(p => {
+                for(let j = 1; j <= 5; j++) {
+                    if(localStorage.getItem(`pos_k_${p}_${j}`) === "true") {
+                        document.getElementById(`k-${p}-${j}`).checked = true;
+                    }
+                }
+            });
+
+            // 4. 恢复负荷调节器状态
+            const savedMode = localStorage.getItem('pos_current_mode') || 'green';
+            switchMode(savedMode);
         }
 
-        // 页面加载时的总初始化调度
+        // 核心生命系统引导启动
         window.onload = function() {
-            initTargetCountdowns();
-            loadSavedProgress();
+            driveTimeAndCountdowns();
+            restoreData();
         };
     </script>
 </body>
