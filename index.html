@@ -38,7 +38,7 @@
         .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
         .logo-area h1 { font-size: 1.8rem; font-weight: 700; background: linear-gradient(45deg, #1a2a6c, #b21f1f, #fdbb2d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .countdown-container { display: flex; gap: 16px; }
-        .countdown-box { text-align: center; background: rgba(0,0,0,0.03); padding: 8px 16px; border-radius: 8px; }
+        .countdown-box { text-align: center; background: rgba(0,0,0,0.03); padding: 8px 16px; border-radius: 8px; min-width: 110px;}
         .countdown-box .days { font-size: 1.4rem; font-weight: bold; color: var(--text-main); }
         .countdown-box .label { font-size: 0.75rem; color: var(--text-muted); }
 
@@ -79,15 +79,15 @@
     <div class="glass-card header">
         <div class="logo-area">
             <h1>FocusFlow OS</h1>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">当前日期: 2026年6月28日 | 独立创始人专属生命看板</p>
+            <p id="live-date" style="font-size: 0.85rem; color: var(--text-muted);">正在加载系统时间...</p>
         </div>
         <div class="countdown-container">
             <div class="countdown-box" style="border-top: 4px solid var(--primary);">
-                <div class="days">112</div>
+                <div id="countdown-zk" class="days">--</div>
                 <div class="label">距离10月自考</div>
             </div>
             <div class="countdown-box" style="border-top: 4px solid var(--yellow);">
-                <div class="days">~176</div>
+                <div id="countdown-gk" class="days">--</div>
                 <div class="label">距离2027国考</div>
             </div>
             <div class="countdown-box" style="border-top: 4px solid var(--text-muted);">
@@ -120,27 +120,27 @@
                 
                 <div class="task-container">
                     <div class="task-item main-task">
-                        <input type="checkbox"> <span class="tag main">主线</span>
+                        <input type="checkbox" id="task-1" onclick="saveProgress()"> <span class="tag main">主线</span>
                         <span>【马原】观看第一章精讲网课，对照思维导图圈出高频概念 (60分钟)</span>
                     </div>
                     <div class="task-item main-task">
-                        <input type="checkbox"> <span class="tag main">主线</span>
+                        <input type="checkbox" id="task-2" onclick="saveProgress()"> <span class="tag main">主线</span>
                         <span>【马原】刷第一章对应的章节选择题，错题打叉标记 (30分钟)</span>
                     </div>
                     <div class="task-item main-task">
-                        <input type="checkbox"> <span class="tag main">主线</span>
+                        <input type="checkbox" id="task-3" onclick="saveProgress()"> <span class="tag main">主线</span>
                         <span>【英语】熟读自考英语教材 Unit 1 课文，梳理核心长难句语法 (60分钟)</span>
                     </div>
                     <div class="task-item sub-task">
-                        <input type="checkbox"> <span class="tag sub">公考</span>
+                        <input type="checkbox" id="task-4" onclick="saveProgress()"> <span class="tag sub">公考</span>
                         <span>【午休行测】利用午休时间在粉笔 APP 盲刷 15 道言语/判断题 (30分钟)</span>
                     </div>
                     <div class="task-item sub-task">
-                        <input type="checkbox"> <span class="tag sub">公考</span>
+                        <input type="checkbox" id="task-5" onclick="saveProgress()"> <span class="tag sub">公考</span>
                         <span>【错题复盘】整理本周错题，在Notion写下一句话错误原因 (30分钟)</span>
                     </div>
                     <div class="task-item sub-task">
-                        <input type="checkbox"> <span class="tag sub">雅思</span>
+                        <input type="checkbox" id="task-6" onclick="saveProgress()"> <span class="tag sub">雅思</span>
                         <span>【碎片保活】通勤路程利用背词软件高频过 30 个雅思通用核心词 (30分钟)</span>
                     </div>
                 </div>
@@ -149,8 +149,8 @@
             <!-- 周末复盘记录舱 -->
             <div class="glass-card">
                 <h2>📝 Weekly Review 核心复盘舱 (每周日20分钟)</h2>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">输入本周最真实的迭代数据，严禁多重点主义：</p>
-                <textarea placeholder="本周主线完成率：&#10;本周最大产品Bug（如：晚上被窝里刷短视频）：&#10;下周唯一最高重点（Win Condition）："></textarea>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">输入本周最真实的迭代数据，数据自动本地实时保存：</p>
+                <textarea id="review-text" oninput="saveProgress()" placeholder="本周主线完成率：&#10;本周最大产品Bug（如：晚上被窝里刷短视频）：&#10;下周唯一最高重点（Win Condition）："></textarea>
             </div>
         </div>
 
@@ -199,12 +199,32 @@
 
     </div>
 
-    <!-- 动态负荷底层交互逻辑 -->
+    <!-- 核心逻辑脚本舱 -->
     <script>
+        // === 1. 自动化时间与高精度倒计时引擎 ===
+        function initTargetCountdowns() {
+            const now = new Date();
+            
+            // 格式化当前日期展示
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('live-date').innerText = `当前日期: ${now.toLocaleDateString('zh-CN', options)} | 独立创始人专属生命看板`;
+
+            // 自考目标设定：2026年10月17日 (初试首日)
+            const zkTarget = new Date('2026-10-17T00:00:00');
+            const diffZk = zkTarget - now;
+            const daysZk = Math.ceil(diffZk / (1000 * 60 * 60 * 24));
+            document.getElementById('countdown-zk').innerText = daysZk > 0 ? daysZk : 0;
+
+            // 公考国考目标估算：2026年11月29日 (历年国考笔试一般在11月底)
+            const gkTarget = new Date('2026-11-29T00:00:00');
+            const diffGk = gkTarget - now;
+            const daysGk = Math.ceil(diffGk / (1000 * 60 * 60 * 24));
+            document.getElementById('countdown-gk').innerText = daysGk > 0 ? daysGk : 0;
+        }
+
+        // === 2. 状态平衡调节器控制流 ===
         function switchMode(mode) {
-            // 重置所有按钮状态
             document.querySelectorAll('.load-btn').forEach(btn => btn.classList.remove('active'));
-            // 激活当前点击按钮
             document.getElementById('btn-' + mode).classList.add('active');
             
             const desc = document.getElementById('mode-desc');
@@ -224,7 +244,49 @@
                 subTasks.forEach(t => t.style.opacity = '0.2');
                 mainTasks.forEach(t => t.style.opacity = '0.4');
             }
+            // 保存当前选中的模式状态
+            localStorage.setItem('focusflow_current_mode', mode);
         }
+
+        // === 3. LocalStorage 本地数据记忆引擎 ===
+        function saveProgress() {
+            // 保存所有复选框状态
+            const totalTasks = 6;
+            for(let i = 1; i <= totalTasks; i++) {
+                const checkbox = document.getElementById(`task-${i}`);
+                localStorage.setItem(`focusflow_task_${i}`, checkbox.checked);
+            }
+            // 保存复盘输入框文本
+            const reviewText = document.getElementById('review-text').value;
+            localStorage.setItem('focusflow_review_text', reviewText);
+        }
+
+        function loadSavedProgress() {
+            // 恢复复选框
+            const totalTasks = 6;
+            for(let i = 1; i <= totalTasks; i++) {
+                const savedStatus = localStorage.getItem(`focusflow_task_${i}`);
+                if (savedStatus === "true") {
+                    document.getElementById(`task-${i}`).checked = true;
+                }
+            }
+            // 恢复复盘文本
+            const savedText = localStorage.getItem('focusflow_review_text');
+            if (savedText) {
+                document.getElementById('review-text').value = savedText;
+            }
+            // 恢复能量模式
+            const savedMode = localStorage.getItem('focusflow_current_mode');
+            if (savedMode) {
+                switchMode(savedMode);
+            }
+        }
+
+        // 页面加载时的总初始化调度
+        window.onload = function() {
+            initTargetCountdowns();
+            loadSavedProgress();
+        };
     </script>
 </body>
 </html>
