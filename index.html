@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusFlow OS - 2026 敏捷备考生命系统</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --primary: #3498db;
+            --green: #2ecc71;
+            --yellow: #f1c40f;
+            --red: #e74c3c;
+            --border-radius: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg-color); color: var(--text-main); padding: 24px; line-height: 1.6; }
+        
+        /* Glassmorphism 磨砂玻璃质感 */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+        }
+
+        h2 { font-size: 1.2rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        
+        /* Header & 倒计时 */
+        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .logo-area h1 { font-size: 1.8rem; font-weight: 700; background: linear-gradient(45deg, #1a2a6c, #b21f1f, #fdbb2d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .countdown-container { display: flex; gap: 16px; }
+        .countdown-box { text-align: center; background: rgba(0,0,0,0.03); padding: 8px 16px; border-radius: 8px; }
+        .countdown-box .days { font-size: 1.4rem; font-weight: bold; color: var(--text-main); }
+        .countdown-box .label { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* 状态平衡器组件 */
+        .load-balancer { display: flex; gap: 12px; margin-top: 12px; }
+        .load-btn { flex: 1; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; opacity: 0.4; text-align: center;}
+        .load-btn.green { background-color: var(--green); color: white; }
+        .load-btn.yellow { background-color: var(--yellow); color: #333; }
+        .load-btn.red { background-color: var(--red); color: white; }
+        .load-btn.active { opacity: 1; transform: scale(1.03); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .mode-tip { margin-top: 12px; font-size: 0.9rem; color: var(--text-muted); min-height: 24px; }
+
+        /* 任务看板布局 */
+        .grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
+
+        /* Task List 样式 */
+        .task-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .task-item:last-child { border-bottom: none; }
+        .task-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+        .task-item input[type="checkbox"]:checked + span { text-decoration: line-through; color: var(--text-muted); }
+        .tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: white; }
+        .tag.main { background: var(--primary); }
+        .tag.sub { background: var(--text-muted); }
+
+        /* OKR & NOT TO DO */
+        .okr-list, .not-to-do-list { list-style: none; }
+        .okr-list li { margin-bottom: 8px; font-size: 0.9rem; }
+        .not-to-do-list li { color: var(--red); font-size: 0.9rem; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+
+        /* Review 文本框 */
+        textarea { width: 100%; height: 120px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); padding: 12px; font-size: 0.9rem; resize: none; margin-top: 8px; }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部状态栏 -->
+    <div class="glass-card header">
+        <div class="logo-area">
+            <h1>FocusFlow OS</h1>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">当前日期: 2026年6月28日 | 独立创始人专属生命看板</p>
+        </div>
+        <div class="countdown-container">
+            <div class="countdown-box" style="border-top: 4px solid var(--primary);">
+                <div class="days">112</div>
+                <div class="label">距离10月自考</div>
+            </div>
+            <div class="countdown-box" style="border-top: 4px solid var(--yellow);">
+                <div class="days">~176</div>
+                <div class="label">距离2027国考</div>
+            </div>
+            <div class="countdown-box" style="border-top: 4px solid var(--text-muted);">
+                <div class="days">待定</div>
+                <div class="label">距离雅思出分</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主体双栏布局 -->
+    <div class="grid-layout">
+        
+        <!-- 左侧栏：动态任务区 -->
+        <div class="left-column">
+            <!-- 能量动态调节平衡器 -->
+            <div class="glass-card">
+                <h2>⚡ 智能状态平衡调节器 (Load Balance)</h2>
+                <div class="load-balancer">
+                    <div id="btn-green" class="load-btn green active" onclick="switchMode('green')">🟢 正常下班</div>
+                    <div id="btn-yellow" class="load-btn yellow" onclick="switchMode('yellow')">🟡 临时加班</div>
+                    <div id="btn-red" class="load-btn red" onclick="switchMode('red')">🔴 极度疲劳</div>
+                </div>
+                <div id="mode-desc" class="mode-tip">当前模式：Green 能量满格。需完成今日主线自考任务与公考保温任务。</div>
+            </div>
+
+            <!-- Sprint 1 任务流 -->
+            <div class="glass-card">
+                <h2>🏃‍♂️ 当前迭代: Sprint 1 (7/1 - 7/14) </h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">本期 Win Condition：吃透马原第一章框架，对齐英语语法基础。</p>
+                
+                <div class="task-container">
+                    <div class="task-item main-task">
+                        <input type="checkbox"> <span class="tag main">主线</span>
+                        <span>【马原】观看第一章精讲网课，对照思维导图圈出高频概念 (60分钟)</span>
+                    </div>
+                    <div class="task-item main-task">
+                        <input type="checkbox"> <span class="tag main">主线</span>
+                        <span>【马原】刷第一章对应的章节选择题，错题打叉标记 (30分钟)</span>
+                    </div>
+                    <div class="task-item main-task">
+                        <input type="checkbox"> <span class="tag main">主线</span>
+                        <span>【英语】熟读自考英语教材 Unit 1 课文，梳理核心长难句语法 (60分钟)</span>
+                    </div>
+                    <div class="task-item sub-task">
+                        <input type="checkbox"> <span class="tag sub">公考</span>
+                        <span>【午休行测】利用午休时间在粉笔 APP 盲刷 15 道言语/判断题 (30分钟)</span>
+                    </div>
+                    <div class="task-item sub-task">
+                        <input type="checkbox"> <span class="tag sub">公考</span>
+                        <span>【错题复盘】整理本周错题，在Notion写下一句话错误原因 (30分钟)</span>
+                    </div>
+                    <div class="task-item sub-task">
+                        <input type="checkbox"> <span class="tag sub">雅思</span>
+                        <span>【碎片保活】通勤路程利用背词软件高频过 30 个雅思通用核心词 (30分钟)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 周末复盘记录舱 -->
+            <div class="glass-card">
+                <h2>📝 Weekly Review 核心复盘舱 (每周日20分钟)</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">输入本周最真实的迭代数据，严禁多重点主义：</p>
+                <textarea placeholder="本周主线完成率：&#10;本周最大产品Bug（如：晚上被窝里刷短视频）：&#10;下周唯一最高重点（Win Condition）："></textarea>
+            </div>
+        </div>
+
+        <!-- 右侧栏：宏观战略控制台 -->
+        <div class="right-column">
+            <!-- OKR 年度目标栏 -->
+            <div class="glass-card">
+                <h2>🎯 年度人生 OKR 看板</h2>
+                <ul class="okr-list">
+                    <li><b>O1: 深大行政管理自考全通</b>
+                        <br><span style="color:var(--text-muted)">KR: 四门公共课全员卡线 60+ 通关</span>
+                    </li>
+                    <li style="margin-top: 12px;"><b>O2: 公务员考试笔试顺利进面</b>
+                        <br><span style="color:var(--text-muted)">KR: 累计刷满 5000 题 / 20套全真模考</span>
+                    </li>
+                    <li style="margin-top: 12px;"><b>O3: 雅思长线语言破局</b>
+                        <br><span style="color:var(--text-muted)">KR: 阶段三转为主线后冲刺总分 6.5+</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 放弃列表 -->
+            <div class="glass-card" style="border-left: 4px solid var(--red);">
+                <h2>🚫 Not To Do List (10月前黑名单)</h2>
+                <ul class="not-to-do-list">
+                    <li>❌ 频繁折腾和更新复杂的软件工具</li>
+                    <li>❌ 每天花大块时间死磕雅思大作文</li>
+                    <li>❌ 承接耗费极多心智的低端视觉私单</li>
+                    <li>❌ 一上来就盲目死记硬背近代史大题</li>
+                </ul>
+            </div>
+
+            <!-- 风险控制仓 -->
+            <div class="glass-card">
+                <h2>🛡️ Risk Log 风险防御预案</h2>
+                <div style="font-size: 0.85rem; margin-bottom: 8px;">
+                    <b>⚠️ 8月公司高频加班：</b><br>
+                    <span style="color:var(--text-muted)">解法：无脑触发🟡/🔴模式，晚上只留低保量，利用 7.29 Buffer 周全力补齐。</span>
+                </div>
+                <div style="font-size: 0.85rem;">
+                    <b>⚠️ 突发身体不适或极度懒惰：</b><br>
+                    <span style="color:var(--text-muted)">解法：启动红灯安全区，每天背10个单词即可，进度绝不断线。</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 动态负荷底层交互逻辑 -->
+    <script>
+        function switchMode(mode) {
+            // 重置所有按钮状态
+            document.querySelectorAll('.load-btn').forEach(btn => btn.classList.remove('active'));
+            // 激活当前点击按钮
+            document.getElementById('btn-' + mode).classList.add('active');
+            
+            const desc = document.getElementById('mode-desc');
+            const subTasks = document.querySelectorAll('.sub-task');
+            const mainTasks = document.querySelectorAll('.main-task');
+
+            if (mode === 'green') {
+                desc.innerText = "当前模式：Green 能量满格。需完成今日主线自考任务与公考、雅思保温任务。";
+                subTasks.forEach(t => t.style.opacity = '1');
+                mainTasks.forEach(t => t.style.opacity = '1');
+            } else if (mode === 'yellow') {
+                desc.innerText = "当前模式：Yellow 触发自动防御机制！公考与雅思自动归档灰色，今晚只做自考主线，做完即通关！";
+                subTasks.forEach(t => t.style.opacity = '0.2');
+                mainTasks.forEach(t => t.style.opacity = '1');
+            } else if (mode === 'red') {
+                desc.innerText = "当前模式：Red 触发低保熔断机制！今晚只强撑看 10 分钟网课或背 10 个单词即可，直接碎大觉，依然算通关！";
+                subTasks.forEach(t => t.style.opacity = '0.2');
+                mainTasks.forEach(t => t.style.opacity = '0.4');
+            }
+        }
+    </script>
+</body>
+</html>
